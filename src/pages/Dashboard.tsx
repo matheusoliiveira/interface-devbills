@@ -95,7 +95,7 @@ const Dashboard = () => {
           </p>
         </Card>
 
-        <Card icon={<Wallet size={20} className="text-red-600 " />} title="Despesas" red>
+        <Card icon={<Wallet size={20} className="text-red-600 " />} title="Despesas" hover>
           <p className="text-2xl font-bold mt-2 text-red-600">
             {formatCurrency(summary.totalExpenses)}
           </p>
@@ -113,19 +113,19 @@ const Dashboard = () => {
               <ResponsiveContainer>
                 <PieChart>
                   <Pie
-                    className="cursor-pointer"
-                    data={summary.expensesByCategory}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    dataKey="amount"
-                    nameKey="categoryName"
-                    label={renderPieChatLabel}
-                  >
-                    {summary.expensesByCategory.map((entry) => (
-                      <Cell key={entry.categoryId} fill={entry.categoryColor} />
-                    ))}
-                  </Pie>
+                      className="cursor-pointer"
+                      data={summary.expensesByCategory as any[]} 
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      dataKey="amount"
+                      nameKey="categoryName"
+                      label={renderPieChatLabel}
+                >
+  {summary.expensesByCategory.map((entry) => (
+    <Cell key={entry.categoryId} fill={entry.categoryColor} />
+  ))}
+</Pie>
                   <Tooltip formatter={formatToolTipValue} />
                 </PieChart>
               </ResponsiveContainer>
