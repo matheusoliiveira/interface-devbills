@@ -55,6 +55,7 @@ const Transactions = () => {
     }
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     fetchTransactions();
   }, [month, year]);
@@ -116,6 +117,7 @@ const Transactions = () => {
         ) : transactions?.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">Nenhuma Transação encontrada.</p>
+
             <Link
               to="/transacoes/nova"
               className="w-fit mx-auto mt-6 bg-primary-500 text-[#051626] font-semibold px-4 py-2.5 rounded-xl flex items-center justify-center hover:bg-primary-600 transition-all"
@@ -129,19 +131,34 @@ const Transactions = () => {
             <table className="divide-y divide-gray-700 min-h-full w-full">
               <thead>
                 <tr>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
                     Descrição
                   </th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
                     Data
                   </th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
                     Categoria
                   </th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
                     Valor
                   </th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
                     {" "}
                   </th>
                 </tr>
@@ -163,10 +180,12 @@ const Transactions = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="px-3 py-4 text-sm whitespace-nowrap">
+
+                    <td className="px-3 py-4 text-sm  whitespace-nowrap">
                       {formatDate(transaction.date)}
                     </td>
-                    <td className="px-3 py-4 text-sm whitespace-nowrap">
+
+                    <td className="px-3 py-4 text-sm  whitespace-nowrap">
                       <div className="flex items-center">
                         <div
                           className="w-2 h-2 rounded-full mr-2"
@@ -175,18 +194,16 @@ const Transactions = () => {
                         <span className="text-sm text-gray-400">{transaction.category.name}</span>
                       </div>
                     </td>
-                    <td className="px-3 py-4 text-sm whitespace-nowrap">
+
+                    <td className="px-3 py-4 text-sm  whitespace-nowrap">
                       <span
-                        className={
-                          transaction.type === TransactionType.INCOME
-                            ? "text-primary-500"
-                            : "text-red-500"
-                        }
+                        className={`${transaction.type === TransactionType.INCOME ? "text-primary-500" : "text-red-500"}`}
                       >
                         {formatCurrency(transaction.amount)}
                       </span>
                     </td>
-                    <td className="px-3 py-4 text-sm whitespace-nowrap cursor-pointer">
+
+                    <td className="px-3 py-4 text-sm  whitespace-nowrap cursor-pointer">
                       <button
                         type="button"
                         onClick={() => confirmDelete(transaction.id)}
@@ -194,7 +211,7 @@ const Transactions = () => {
                         disabled={deletingId === transaction.id}
                       >
                         {deletingId === transaction.id ? (
-                          <span className="inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></span>
+                          <span className="inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounde-full animate-spin"></span>
                         ) : (
                           <Trash2 className="w-4 h-4" />
                         )}

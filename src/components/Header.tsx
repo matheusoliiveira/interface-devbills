@@ -15,12 +15,13 @@ const Header = () => {
   const { pathname } = useLocation();
 
   const isAuthenticated: boolean = !!authState.user;
-  const navLink: NavLink[] = [
+
+  const navLinks: NavLink[] = [
     { name: "Dashboard", path: "/dashboard" },
-    { name: "Transações", path: "/transaçoes" },
+    { name: "Transações", path: "/transacoes" },
   ];
 
-  const handlesignOut = (): void => {
+  const handleSignOut = (): void => {
     setIsOpen(false);
     signOut();
   };
@@ -29,21 +30,21 @@ const Header = () => {
     setIsOpen(!isOpen);
   };
 
-  const renderAvatar = () => {
+  const handleAvatar = () => {
     if (!authState.user) return null;
 
     if (authState.user.photoURL) {
       return (
         <img
           src={authState.user.photoURL}
-          alt={`foto de perfil do(a) ${authState.user.displayName}`}
+          alt={`foto do perfil do(a) ${authState.user.displayName}`}
           className="w-8 h-8 rounded-full border border-gray-700"
         />
       );
     }
 
     return (
-      <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white fount-medium">
+      <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white font-medium">
         {authState.user.displayName?.charAt(0)}
       </div>
     );
@@ -53,21 +54,21 @@ const Header = () => {
     <header className="bg-gray-900 border-b border-gray-700">
       <div className="container-app">
         <div className="flex justify-between items-center py-4">
-          <Link to="/" className="flex gap-2 text-xl text-primary-500 items-center font-bold">
+          <Link to={"/"} className="flex gap-2 text-xl text-primary-500 items-center font-bold">
             <Activity className="h-6 w-6" />
             DevBills
           </Link>
 
           {isAuthenticated && (
             <nav className="hidden md:flex space-x-3">
-              {navLink.map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   className={
-                    decodeURIComponent(pathname) === link.path
+                    pathname === link.path
                       ? "text-primary-500 bg-primary-500/10 rounded-md h-10 px-3 py-2"
-                      : "text-gray-400 h-10 px-3 py-2 hover:text-primary-500 hover:bg-primary-500/5 rounded-md"
+                      : "text-gray-400 rounded-md h-10 px-3 py-2 hover:text-primary-500 hover:bg-primary-500/5"
                   }
                 >
                   {link.name}
@@ -80,21 +81,20 @@ const Header = () => {
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  {renderAvatar()}
+                  {handleAvatar()}
                   <span className="text-sm font-medium">{authState.user?.displayName}</span>
                 </div>
-
                 <button
                   type="button"
-                  onClick={handlesignOut}
-                  className=" hover:text-red-300 hover:bg-red-500 p-2 rounded-full transition-colors cursor-pointer"
+                  onClick={handleSignOut}
+                  className=" p-2 rounded-full  cursor-pointer"
                 >
-                  <LogOut className="text-gray-200" />
+                  <LogOut className="text-gray-200 hover:text-red-700 transition-colors" />
                 </button>
               </div>
             ) : (
               <Link to="/login">
-                <LogIn className="bg-primary-500 text-gray-900 font-semibold px-5 py-2.5 rounded-xl flex items-center justify-center houver:bg-primary-500 transition-all"></LogIn>
+                <LogIn className="bg-primary-500 text-gray-900 font-semibold px-5 py-2.5 rounded-xl flex items-center justify-center hover:bg-primary-500 transition-all" />
               </Link>
             )}
           </div>
@@ -105,28 +105,27 @@ const Header = () => {
               className="text-gray-400 p-2 rounded-lg hover:bg-gray-800 transition-colors"
               onClick={changeMenu}
             >
-              {" "}
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
       </div>
-
       {isOpen && (
         <div>
           <div>
             {isAuthenticated ? (
               <>
                 <nav className="space-y-1">
-                  {navLink.map((link) => (
+                  {navLinks.map((link) => (
                     <Link
                       to={link.path}
                       key={link.path}
-                      className={`block p-5 rounded-lg ${
-                        pathname === link.path
-                          ? "bg-gray-800 text-primary-500 font-medium"
-                          : "text-gray-400 hover:bg-gray-800 hover:text-primary-500"
-                      }`}
+                      className={`block px-3 p-5 rounded-lg
+										${
+                      pathname === link.path
+                        ? "bg-gray-800 text-primary-500"
+                        : "text-gray-400 hover:bg-primary-500"
+                    }`}
                       onClick={() => setIsOpen(false)}
                     >
                       {link.name}
@@ -134,24 +133,24 @@ const Header = () => {
                   ))}
                 </nav>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-700">
+                <div className="flex items-center justify-between p-4 border-t border-gray-700">
                   <div className="flex items-center space-x-2">
-                    {renderAvatar()}
+                    {handleAvatar()}
                     <span>{authState.user?.displayName}</span>
                   </div>
                   <button
                     type="button"
-                    onClick={handlesignOut}
-                    className=" cursor-pointer text-gray-400 hover:text-red-700 p-2 rounded-full hover:bg-red-200 transition-colors"
+                    onClick={handleSignOut}
+                    className="text-gray-400 hover:text-red-700 p-2 rounded-full transition-colors cursor-pointer"
                   >
-                    <LogOut size={20} />
+                    <LogOut size={24} />
                   </button>
                 </div>
               </>
             ) : (
               <Link
+                className="bg-primary-500 text-gray-800 font-semibold px-5 py-2.5 rounded-xl flex items-center justify-center hover:bg-primary-600"
                 to="/login"
-                className="bg-primary-500 text-gray-800 font-semibold px-5 py-2.5 rounded-2xl flex items-center justify-center hover:bg-primary-600"
                 onClick={() => setIsOpen(false)}
               >
                 Entrar

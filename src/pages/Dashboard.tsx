@@ -8,43 +8,36 @@ import {
   Legend,
   Pie,
   PieChart,
-  Rectangle,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import type { PieLabelProps } from "recharts/types/polar/Pie";
 import Card from "../components/Card";
 import MonthYearSelect from "../components/MonthYearSelect";
 import { getTransactionsMonthly, getTransactionsSummary } from "../services/transactionService";
 import type { MonthlyItem, TransactionSummary } from "../types/transactions";
 import { formatCurrency } from "../utils/formatters";
 
-const initialSummary: TransactionSummary = {
-  balance: 0,
-  totalExpenses: 0,
+const InitialSummary: TransactionSummary = {
   totalIncomes: 0,
+  totalExpenses: 0,
+  balance: 0,
   expensesByCategory: [],
 };
-
-interface ChartLabelProps {
-  categoryName: string;
-  percent: number;
-}
 
 const Dashboard = () => {
   const currentDate = new Date();
   const [year, setYear] = useState<number>(currentDate.getFullYear());
-  const [month, setMonthh] = useState(currentDate.getMonth() + 1);
-  const [summary, setSummaryy] = useState<TransactionSummary>(initialSummary);
+  const [month, setMonth] = useState(currentDate.getMonth() + 1);
+  const [summary, setSummary] = useState<TransactionSummary>(InitialSummary);
   const [monthlyItemsData, setMonthlyItemsData] = useState<MonthlyItem[]>([]);
 
   useEffect(() => {
     async function loadTransactionsSummary() {
       const response = await getTransactionsSummary(month, year);
-      setSummaryy(response);
-      console.log(response);
+
+      setSummary(response);
     }
 
     loadTransactionsSummary();
@@ -52,24 +45,17 @@ const Dashboard = () => {
 
   useEffect(() => {
     async function loadTransactionsMonthly() {
-      const response = await getTransactionsMontly(month, year, 4);
+      const response = await getTransactionsMonthly(month, year, 4);
 
-      setMonthlyItemsData(response.history);
       console.log(response);
+      setMonthlyItemsData(response.history);
     }
 
     loadTransactionsMonthly();
   }, [month, year]);
 
-  // ✅ Função corrigida: usa PieLabelProps + aplica ChartLabelProps
-  const renderPieChartLabel = (props: PieLabelProps) => {
-    const chartLabelData: ChartLabelProps = {
-      categoryName: props.name?.toString() || "",
-      percent: props.percent ?? 0,
-    };
-
-    const percentValue = (chartLabelData.percent * 100).toFixed(0);
-    return `${chartLabelData.categoryName}: ${percentValue}%`;
+  const renderPieChatLabel = ({ name, percent }: { name?: string; percent?: number }) => {
+    return `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`;
   };
 
   const formatToolTipValue = (value: number | string): string => {
@@ -79,11 +65,11 @@ const Dashboard = () => {
   return (
     <div className="container-app py-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h1 className="text-2xl font-bold mb-4 md:mb-0"> Dashboard</h1>
+        <h1 className="text-2xl font-bold mb-4 md:mb-0">Dashboard</h1>
         <MonthYearSelect
           month={month}
           year={year}
-          onMonthChange={setMonthh}
+          onMonthChange={setMonth}
           onYearChange={setYear}
         />
       </div>
@@ -96,46 +82,45 @@ const Dashboard = () => {
           glowEffect={summary.balance > 0}
         >
           <p
-            className={`text-2xl font-semibold mt-2 ${
-              summary.balance > 0 ? "text-primary-500" : "text-red-300"
-            }`}
+            className={`text-2xl font-bold mt-2
+					${summary.balance > 0 ? "text-green-500" : "text-red-300"}`}
           >
             {formatCurrency(summary.balance)}
           </p>
         </Card>
 
         <Card icon={<ArrowUp size={20} className="text-primary-500" />} title="Receitas" hover>
-          <p className="text-2xl font-semibold mt-2 text-primary-500">
+          <p className="text-2xl font-bold mt-2 text-green-500">
             {formatCurrency(summary.totalIncomes)}
           </p>
         </Card>
 
-        <Card icon={<Wallet size={20} className="text-red-600" />} title="Despesas" hover>
-          <p className="text-2xl font-semibold mt-2 text-red-600">
+        <Card icon={<Wallet size={20} className="text-red-600 " />} title="Despesas" red>
+          <p className="text-2xl font-bold mt-2 text-red-600">
             {formatCurrency(summary.totalExpenses)}
           </p>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 mt-3">
         <Card
           icon={<TrendingUp size={20} className="text-primary-500" />}
-          title="Despesas por Categoria"
+          title="Despesas por categoria"
           className="min-h-80"
-          hover
         >
           {summary.expensesByCategory.length > 0 ? (
             <div className="h-72 mt-4">
               <ResponsiveContainer>
                 <PieChart>
                   <Pie
+                    className="cursor-pointer"
                     data={summary.expensesByCategory}
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
                     dataKey="amount"
                     nameKey="categoryName"
-                    label={renderPieChartLabel}
+                    label={renderPieChatLabel}
                   >
                     {summary.expensesByCategory.map((entry) => (
                       <Cell key={entry.categoryId} fill={entry.categoryColor} />
@@ -146,7 +131,7 @@ const Dashboard = () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 text-gray-500">
+            <div className="flex justify-center items-center h-64 text-gray-500">
               Nenhuma despesa registrada nesse período
             </div>
           )}
@@ -154,7 +139,7 @@ const Dashboard = () => {
         <Card
           icon={<Calendar size={20} className="text-primary-500" />}
           title="Histórico Mensal"
-          className="min-h-80"
+          className="min-h-80 p-2.5"
         >
           <div className="h-72 mt-4">
             {monthlyItemsData.length > 0 ? (
@@ -177,23 +162,17 @@ const Dashboard = () => {
                       backgroundColor: "#1A1A1A",
                       borderColor: "#2A2A2A",
                     }}
-                    labelStyle={{ color: "#F8F8F8" }}
+                    labelStyle={{
+                      color: "#f8f8f8",
+                    }}
                   />
                   <Legend />
-                  <Bar
-                    dataKey="expenses"
-                    fill="#FF6384"
-                    activeBar={<Rectangle fill="pink" stroke="blue" />}
-                  />
-                  <Bar
-                    dataKey="income"
-                    fill="#37E359"
-                    activeBar={<Rectangle fill="gold" stroke="purple" />}
-                  />
+                  <Bar dataKey="expenses" name="Despesas" fill="#FF6384" />
+                  <Bar dataKey="income" name="Receitas" fill="#37E359" />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-64 text-gray-500">
+              <div className="flex justify-center items-center h-64 text-gray-500">
                 Nenhuma despesa registrada nesse período
               </div>
             )}
