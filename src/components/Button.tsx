@@ -16,6 +16,7 @@ const Button = ({
   isLoading = false,
   className,
   disabled,
+  type = "button", // <- agora respeita o type passado
   ...rest
 }: ButtonProps) => {
   const variantClasses = {
@@ -51,13 +52,13 @@ const Button = ({
 
   return (
     <button
-      type="button"
+      type={type} // <- usa o type passado via props
       className={`cursor-pointer px-5 py-2.5 rounded-xl font-medium transition-all flex items-center justify-center
         ${variantClasses[variant]}
         ${isLoading || disabled ? "opacity-70 cursor-not-allowed" : ""}
         ${className}
         ${fullWidth ? "w-full" : ""}
-        `}
+      `}
       disabled={isLoading || disabled}
       {...rest}
     >

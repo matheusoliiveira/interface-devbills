@@ -92,7 +92,6 @@ const TransactionsForm = () => {
 
       await createTransaction(transactionData);
       toast.success("Transação adicionada com sucesso!");
-      console.log("Redirecionando para /transacoes");
       navigate("/transacoes");
     } catch (_err) {
       toast.error("Falha ao adicionar transação");
