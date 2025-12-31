@@ -170,7 +170,7 @@ const Transactions = () => {
                       <div className="flex items-center">
                         <div className="mr-2">
                           {transaction.type === TransactionType.INCOME ? (
-                            <ArrowUp className="w-4 h-4 text-primary-500" />
+                            <ArrowUp className="w-4 h-4 text-green-500" />
                           ) : (
                             <ArrowDown className="w-4 h-4 text-red-500" />
                           )}
