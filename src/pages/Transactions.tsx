@@ -197,7 +197,7 @@ const Transactions = () => {
 
                     <td className="px-3 py-4 text-sm  whitespace-nowrap">
                       <span
-                        className={`${transaction.type === TransactionType.INCOME ? "text-primary-500" : "text-red-500"}`}
+                        className={`${transaction.type === TransactionType.INCOME ? "text-green-500" : "text-red-500"}`}
                       >
                         {formatCurrency(transaction.amount)}
                       </span>
