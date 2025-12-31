@@ -91,7 +91,7 @@ const TransactionsForm = () => {
 
       await createTransaction(transactionData);
       toast.success("Transação adicionada com sucesso!");
-      navigate("/transaçoes");
+      navigate("/transacoes");
     } catch (_err) {
       toast.error("Falha ao adicionar transação");
     } finally {
@@ -100,7 +100,7 @@ const TransactionsForm = () => {
   };
 
   const handleCancel = () => {
-    navigate("/transaçoes");
+    navigate("/transacoes");
   };
 
   return (
