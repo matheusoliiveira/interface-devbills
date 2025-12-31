@@ -23,26 +23,21 @@ const InitialSummary: TransactionSummary = {
   totalIncomes: 0,
   totalExpenses: 0,
   balance: 0,
-  expensesByCategory: [],
+  expenseCategory: [],
 };
 
 const Dashboard = () => {
   const currentDate = new Date();
-
   const [year, setYear] = useState<number>(currentDate.getFullYear());
-  const [month, setMonth] = useState<number>(currentDate.getMonth() + 1);
+  const [month, setMonth] = useState(currentDate.getMonth() + 1);
   const [summary, setSummary] = useState<TransactionSummary>(InitialSummary);
   const [monthlyItemsData, setMonthlyItemsData] = useState<MonthlyItem[]>([]);
 
   useEffect(() => {
     async function loadTransactionsSummary() {
-      try {
-        const response = await getTransactionsSummary(month, year);
-        setSummary(response ?? InitialSummary);
-      } catch (error) {
-        console.error("Erro ao carregar summary:", error);
-        setSummary(InitialSummary);
-      }
+      const response = await getTransactionsSummary(month, year);
+
+      setSummary(response);
     }
 
     loadTransactionsSummary();
@@ -50,15 +45,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     async function loadTransactionsMonthly() {
-      try {
-        const response = await getTransactionsMonthly(month, year, 4);
-        console.log(response);
+      const response = await getTransactionsMonthly(month, year, 4);
 
-        setMonthlyItemsData(response?.history ?? []);
-      } catch (error) {
-        console.error("Erro ao carregar histórico mensal:", error);
-        setMonthlyItemsData([]);
-      }
+      console.log(response);
+      setMonthlyItemsData(response.history);
     }
 
     loadTransactionsMonthly();
@@ -71,11 +61,6 @@ const Dashboard = () => {
   const formatToolTipValue = (value: number | string): string => {
     return formatCurrency(typeof value === "number" ? value : 0);
   };
-
-  // 🔒 Blindagem extra contra estado inválido
-  if (!Array.isArray(monthlyItemsData)) {
-    return <div className="container-app py-6 text-gray-500">Carregando dados...</div>;
-  }
 
   return (
     <div className="container-app py-6">
@@ -97,9 +82,8 @@ const Dashboard = () => {
           glowEffect={summary.balance > 0}
         >
           <p
-            className={`text-2xl font-bold mt-2 ${
-              summary.balance > 0 ? "text-green-500" : "text-red-300"
-            }`}
+            className={`text-2xl font-bold mt-2
+					${summary.balance > 0 ? "text-green-500" : "text-red-300"}`}
           >
             {formatCurrency(summary.balance)}
           </p>
@@ -111,7 +95,7 @@ const Dashboard = () => {
           </p>
         </Card>
 
-        <Card icon={<Wallet size={20} className="text-red-600" />} title="Despesas" hover>
+        <Card icon={<Wallet size={20} className="text-red-600 " />} title="Despesas" red>
           <p className="text-2xl font-bold mt-2 text-red-600">
             {formatCurrency(summary.totalExpenses)}
           </p>
@@ -124,13 +108,13 @@ const Dashboard = () => {
           title="Despesas por categoria"
           className="min-h-80"
         >
-          {summary.expensesByCategory.length > 0 ? (
+          {summary.expenseCategory.length > 0 ? (
             <div className="h-72 mt-4">
               <ResponsiveContainer>
                 <PieChart>
                   <Pie
                     className="cursor-pointer"
-                    data={summary.expensesByCategory}
+                    data={summary.expenseCategory}
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
@@ -138,7 +122,7 @@ const Dashboard = () => {
                     nameKey="categoryName"
                     label={renderPieChatLabel}
                   >
-                    {summary.expensesByCategory.map((entry) => (
+                    {summary.expenseCategory.map((entry) => (
                       <Cell key={entry.categoryId} fill={entry.categoryColor} />
                     ))}
                   </Pie>
@@ -152,7 +136,6 @@ const Dashboard = () => {
             </div>
           )}
         </Card>
-
         <Card
           icon={<Calendar size={20} className="text-primary-500" />}
           title="Histórico Mensal"
@@ -179,7 +162,9 @@ const Dashboard = () => {
                       backgroundColor: "#1A1A1A",
                       borderColor: "#2A2A2A",
                     }}
-                    labelStyle={{ color: "#f8f8f8" }}
+                    labelStyle={{
+                      color: "#f8f8f8",
+                    }}
                   />
                   <Legend />
                   <Bar dataKey="expenses" name="Despesas" fill="#FF6384" />
