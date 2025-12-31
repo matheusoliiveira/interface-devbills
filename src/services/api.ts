@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from "axio
 import { firebaseAuth } from "../config/firebase";
 
 export const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:3333/api",
   timeout: 10000,
 });
 
@@ -13,11 +13,12 @@ api.interceptors.request.use(
     if (user) {
       try {
         const token = await user.getIdToken();
-        config.headers.set("Authorization", `Bearer ${token} `);
+        config.headers.set("Authorization", `Bearer ${token}`);
       } catch (err) {
         console.error("Erro ao obter token do usuário no Firebase", err);
       }
     }
+
     return config;
   },
 );
