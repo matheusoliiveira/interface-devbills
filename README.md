@@ -7,7 +7,7 @@ simples, intuitiva e responsiva no controle financeiro pessoal.
 
 ## 🖥️ Preview
 
-![Finly Preview](./docs/images/finly-preview.png)
+![Finly Preview](./src/assets/finly-preview.png)
 
 ---
 
@@ -42,7 +42,7 @@ O frontend consome a API desenvolvida em Node.js, responsável por autenticaçã
 persistência de dados e regras de negócio.
 
 🔗 **Repositório do Backend:**  
-https://github.com/seu-usuario/devbills-api
+https://github.com/matheusoliiveira/api-finly
 
 ---
 
@@ -50,10 +50,10 @@ https://github.com/seu-usuario/devbills-api
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/devbills-frontend.git
+git clone https://github.com/matheusoliiveira/finly-interface
 
 # Acesse a pasta
-cd devbills-frontend
+cd finly-interface
 
 # Instale as dependências
 npm install
